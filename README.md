@@ -20,4 +20,4 @@ Tower Defence
 * Разработать удобный графический интерфейс
 * Обеспечить кроссплатформенность игры 
 # Архитектура приложения
-![alt text](https://github.com/[NamYoSeb]/[Applicatiom_with_GUI]/blob/[master]/UML.jpg?raw=true)
+![alt text](https://github.com/[NamYoSeb]/[Applicatiom_with_GUI]/blob/[main]/UML.jpg?raw=true)
