@@ -8,7 +8,12 @@
 #include <QLabel>
 #include <QGraphicsPixmapItem>
 #include "powergenerator.h"
+#include "shooter.h"
+#include "wallnut.h"
+#include "potatomine.h"
+#include "repeater.h"
 #include "gameobject.h"
+#include "enemy.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,7 +26,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    static QList<GameObject *> zombieObjects;
     void setupGameScene();
     void hideMenu();
     void createGameplayUi();
@@ -33,10 +38,21 @@ public:
 
 
 private slots:
+    void enemyGenerator();
     void on_StartButton_clicked();
 
+    void moveEnemies();
     void powerGeneratorButtonClicked();
+    void shooterButtonClicked();
+    void wallButtonClicked();
+    void mineButtonClicked();
+    void superShooterButtonClicked();
+
     void powerGeneratorPlacement();
+    void shooterPlacement();
+    void wallPlacement();
+    void minePlacement();
+    void superShooterPlacement();
 
 public:
     static QPointF mouseCoordinates;
@@ -51,6 +67,9 @@ private:
     QLabel* plantHover;
 
     QTimer* plantTimer;
+    QTimer* moveTimer;
+    QTimer* zombieTimer;
+    QList<int> zombieStartRows;
 
     QPushButton* powerGeneratorButton;
     QPushButton* shooterButton;
