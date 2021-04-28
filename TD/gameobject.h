@@ -11,6 +11,9 @@ public:
     QLabel *gameObjectGif;
 
     void setCoordinates(int x, int y);
+    void move();
+    void setVelocity(int velocity);
+
     virtual void setupGameObject() = 0;
     virtual QRectF boundingRect() const = 0;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *) = 0;
@@ -19,6 +22,9 @@ public:
 protected:
     int width;
     int height;
+    int velocity = 0;
+    int xCoordinate;
+    int yCoordinate;
 };
 
 #endif // GAMEOBJECT_H

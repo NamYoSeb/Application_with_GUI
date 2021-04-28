@@ -4,12 +4,19 @@
 QPointF MainWindow::mouseCoordinates;
 QPointF MainWindow::mousePressCoordinates;
 QGraphicsScene *MainWindow::gameScene;
+QList<GameObject *> MainWindow::zombieObjects;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    zombieStartRows.append(82);
+    zombieStartRows.append(154);
+    zombieStartRows.append(226);
+    zombieStartRows.append(298);
+    zombieStartRows.append(370);
 
     gameScene = new GameScene();
     plantHover = new QLabel();
@@ -35,6 +42,13 @@ void MainWindow::setupGameScene()
     gameScene->addWidget(sunImage);
 
     setRows();
+
+    zombieTimer = new QTimer();
+    moveTimer = new QTimer();
+    connect(moveTimer, SIGNAL(timeout()), this, SLOT(moveEnemies()));
+    connect(zombieTimer, SIGNAL(timeout()), this, SLOT(enemyGenerator()));
+    zombieTimer->start(20);
+    moveTimer->start(25);
 
     ui->graphicsView->setScene(gameScene);
     gameScene->setSceneRect(0, 0, 794, 470);
@@ -68,6 +82,10 @@ void MainWindow::createGameplayUi()
     superShooterButton->setGeometry(320,0,59,82);
 
     connect(powerGeneratorButton, SIGNAL(clicked()), this, SLOT(powerGeneratorButtonClicked()));
+    connect(shooterButton, SIGNAL(clicked()), this, SLOT(shooterButtonClicked()));
+    connect(wallButton, SIGNAL(clicked()), this, SLOT(wallButtonClicked()));
+    connect(mineButton, SIGNAL(clicked()), this, SLOT(mineButtonClicked()));
+    connect(superShooterButton, SIGNAL(clicked()), this, SLOT(superShooterButtonClicked()));
 
     sunValue = new QLabel();
     sunValue->setAttribute(Qt::WA_TranslucentBackground);
@@ -148,6 +166,22 @@ void MainWindow::plantGenerator(GameObject* plant)
     plantHover->setGeometry(-70,-70,0,0);
 }
 
+void MainWindow::enemyGenerator()
+{
+    GameObject *enemy = new Enemy();
+    int rowNumber = rand() % 5;
+
+    enemy->setCoordinates(720, zombieStartRows[rowNumber]);
+
+    enemy->setVelocity(1);
+    gameScene->addItem(enemy);
+    zombieObjects.append(enemy);
+    enemy->setupGameObject();
+
+    zombieTimer->stop();
+    zombieTimer->start(2000);
+}
+
 void MainWindow::powerGeneratorPlacement()
 {
     plantHover->setPixmap(QPixmap(":/images/sunflower.png"));
@@ -157,6 +191,54 @@ void MainWindow::powerGeneratorPlacement()
     {
         GameObject* sunflower = new PowerGenerator();
         plantGenerator(sunflower);
+    }
+}
+
+void MainWindow::shooterPlacement()
+{
+    plantHover->setPixmap(QPixmap(":/images/pea-shooter.png"));
+    plantHover->setGeometry(mouseCoordinates.x() - 21, mouseCoordinates.y() - 21, 42, 42);
+
+    if (mousePressCoordinates.x() != 0 || mousePressCoordinates.y() != 0)
+    {
+        GameObject* shooter = new Shooter();
+        plantGenerator(shooter);
+    }
+}
+
+void MainWindow::wallPlacement()
+{
+    plantHover->setPixmap(QPixmap(":/images/wallnut.png"));
+    plantHover->setGeometry(mouseCoordinates.x() - 21, mouseCoordinates.y() - 21, 42, 42);
+
+    if (mousePressCoordinates.x() != 0 || mousePressCoordinates.y() != 0)
+    {
+        GameObject* wallnut = new Wallnut();
+        plantGenerator(wallnut);
+    }
+}
+
+void MainWindow::minePlacement()
+{
+    plantHover->setPixmap(QPixmap(":/images/potato-mine.png"));
+    plantHover->setGeometry(mouseCoordinates.x() - 21, mouseCoordinates.y() - 21, 42, 42);
+
+    if (mousePressCoordinates.x() != 0 || mousePressCoordinates.y() != 0)
+    {
+        GameObject* potatoMine = new PotatoMine();
+        plantGenerator(potatoMine);
+    }
+}
+
+void MainWindow::superShooterPlacement()
+{
+    plantHover->setPixmap(QPixmap(":/images/repeater.png"));
+    plantHover->setGeometry(mouseCoordinates.x() - 21, mouseCoordinates.y() - 21, 42, 42);
+
+    if (mousePressCoordinates.x() != 0 || mousePressCoordinates.y() != 0)
+    {
+        GameObject* repeater = new Repeater();
+        plantGenerator(repeater);
     }
 }
 
@@ -182,10 +264,49 @@ void MainWindow::on_StartButton_clicked()
     setupGameScene();
 }
 
+void MainWindow::moveEnemies()
+{
+    for(size_t i = 0; i < zombieObjects.size(); ++i){
+        zombieObjects.at(i)->move();
+    }
+}
+
 void MainWindow::powerGeneratorButtonClicked()
 {
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(powerGeneratorPlacement()));
+    mousePressCoordinates = QPointF(0,0);
+    plantTimer->start(20);
+}
+
+void MainWindow::shooterButtonClicked()
+{
+    plantTimer = new QTimer();
+    connect(plantTimer,SIGNAL(timeout()),this,SLOT(shooterPlacement()));
+    mousePressCoordinates = QPointF(0,0);
+    plantTimer->start(20);
+}
+
+void MainWindow::wallButtonClicked()
+{
+    plantTimer = new QTimer();
+    connect(plantTimer,SIGNAL(timeout()),this,SLOT(wallPlacement()));
+    mousePressCoordinates = QPointF(0,0);
+    plantTimer->start(20);
+}
+
+void MainWindow::mineButtonClicked()
+{
+    plantTimer = new QTimer();
+    connect(plantTimer,SIGNAL(timeout()),this,SLOT(minePlacement()));
+    mousePressCoordinates = QPointF(0,0);
+    plantTimer->start(20);
+}
+
+void MainWindow::superShooterButtonClicked()
+{
+    plantTimer = new QTimer();
+    connect(plantTimer,SIGNAL(timeout()),this,SLOT(superShooterPlacement()));
     mousePressCoordinates = QPointF(0,0);
     plantTimer->start(20);
 }
