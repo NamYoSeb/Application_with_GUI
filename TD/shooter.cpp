@@ -3,7 +3,7 @@
 
 Shooter::Shooter()
 {
-
+    health = 100;
 }
 
 QRectF Shooter::boundingRect() const
