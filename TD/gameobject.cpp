@@ -12,9 +12,29 @@ void GameObject::setCoordinates(int x, int y)
     this->setPos(xCoordinate, yCoordinate);
 }
 
-void GameObject::setVelocity(int velocity)
+void GameObject::setVelocity(double velocity)
 {
     this->velocity = velocity;
+}
+
+int GameObject::x()
+{
+    return xCoordinate;
+}
+
+int GameObject::y()
+{
+    return yCoordinate;
+}
+
+int GameObject::getHealth() const
+{
+    return health;
+}
+
+void GameObject::setHealth(int value)
+{
+    health = value;
 }
 
 void GameObject::move()

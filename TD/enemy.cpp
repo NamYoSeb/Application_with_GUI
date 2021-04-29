@@ -8,6 +8,12 @@ Enemy::Enemy()    //Default constructor
 {
     width = 40;
     height = 62;
+    attack = 10;
+    health = 100;
+
+    timer = new QTimer();
+    timer->setSingleShot(true);
+    timer->stop();
 }
 
 Enemy::~Enemy()   //Destructor
@@ -38,30 +44,30 @@ QRectF Enemy::boundingRect() const
 }
 
 void Enemy::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
-{/*
+{
     //Loop through all plant zombies
     for (int i = 0; i < MainWindow::plantObjects.size(); i++)
     {
         //If the zombie collides with a plant
-        if (this->collidesWithItem(MainWindow::plantObjects.at(i)) && !multiUseTimer->isActive())
+        if ((this->x() >= MainWindow::plantObjects.at(i)->x() &&
+                this->x() <= (MainWindow::plantObjects.at(i)->x() + 71) &&
+                this->y() >= MainWindow::plantObjects.at(i)->y() &&
+                this->y() <= (MainWindow::plantObjects.at(i)->y() + 71)) && !timer->isActive())
         {
             //Stop the x velocity of the zombie
-            this->setXVelocity(0);
+            this->setVelocity(0);
             //Subtract health from plant object
-            MainWindow::plantObjects.at(i)->setLife(MainWindow::plantObjects.at(i)->getLife() - attack);
+           MainWindow::plantObjects.at(i)->setHealth(MainWindow::plantObjects.at(i)->getHealth() - attack);
             //Check life of plant
-            if (MainWindow::plantObjects.at(i)->getLife() <= 0)
+            if (MainWindow::plantObjects.at(i)->getHealth() <= 0)
             {
-                this->setXVelocity(speed);
+                this->setVelocity(1);
                 break;
             }
-            //Set the X velocity
-            this->setXVelocity(0.5);
-            //Start the timer to attack the zombie
-            multiUseTimer->start(rate * 1000);
+            timer->start(1000);
             break;
         }
-    }*/
+    }
     //Check timer
   /*  if (multiUseTimer->isActive() && multiUseTimer->remainingTime() <= (rate / 2 * 1000))
     {

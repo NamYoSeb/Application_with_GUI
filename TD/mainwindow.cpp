@@ -5,6 +5,7 @@ QPointF MainWindow::mouseCoordinates;
 QPointF MainWindow::mousePressCoordinates;
 QGraphicsScene *MainWindow::gameScene;
 QList<GameObject *> MainWindow::zombieObjects;
+QList<GameObject *> MainWindow::plantObjects;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -146,12 +147,41 @@ void MainWindow::plantGenerator(GameObject* plant)
 
     if (mouse_press_x > 72 && mouse_press_x < 720 && mouse_press_y > 82 && mouse_press_y < 442)
     {
+        for (int i = 0; i < plantObjects.size(); i++)
+        {
+            if (mouse_press_x >= plantObjects.at(i)->x() &&
+                    mouse_press_x <= (plantObjects.at(i)->x() + 71) &&
+                    mouse_press_y >= plantObjects.at(i)->y() &&
+                    mouse_press_y <= (plantObjects.at(i)->y() + 71))
+            {
+                plantTimer->start();
+                delete plant;
+                plant = 0;
+                return;
+            }
+        }
+
+        for (int i = 0; i < zombieObjects.size(); i++)
+        {
+            if (mouse_press_x >= zombieObjects.at(i)->x() &&
+                    mouse_press_x <= (zombieObjects.at(i)->x() + 71) &&
+                    mouse_press_y >= zombieObjects.at(i)->y() &&
+                    mouse_press_y <= (zombieObjects.at(i)->y() + 71))
+            {
+                plantTimer->start();
+                delete plant;
+                plant = 0;
+                return;
+            }
+        }
+
         if (1)
         {
             int x = mouse_press_x - ((mouse_press_x - 72) % 72);
             int y = mouse_press_y - ((mouse_press_y - 82) % 72);
             plant->setCoordinates(x, y);
             gameScene->addItem(plant);
+            plantObjects.append(plant);
             plant->setupGameObject();
         }
         else

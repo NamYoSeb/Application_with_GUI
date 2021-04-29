@@ -27,6 +27,8 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     static QList<GameObject *> zombieObjects;
+    static QList<GameObject *> plantObjects;
+
     void setupGameScene();
     void hideMenu();
     void createGameplayUi();
