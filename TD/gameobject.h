@@ -9,6 +9,7 @@ class GameObject : public QGraphicsItem
 public:
     GameObject();
     QLabel *gameObjectGif;
+    QTimer *multiUseTimer;
 
     void setCoordinates(int x, int y);
     void move();
@@ -24,16 +25,24 @@ public:
     int getHealth() const;
     void setHealth(int value);
 
+    QString getType() const;
+
 protected:
     int width;
     int height;
-    double velocity = 0;
+    double velocity;
+
     int xCoordinate;
     int yCoordinate;
+
     int attack;
     int health;
 
-    QTimer* timer;
+    QString type;
+
+    QString imageUrl;
+    int imageUrlWidth;
+    int imageUrlHeight;
 };
 
 #endif // GAMEOBJECT_H

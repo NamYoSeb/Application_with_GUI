@@ -1,9 +1,13 @@
 #include "wallnut.h"
 #include "mainwindow.h"
 
+int Wallnut::cost = 50;
+
+
 Wallnut::Wallnut()
 {
-
+    health = 300;
+    attack = 0;
 }
 
 QRectF Wallnut::boundingRect() const
@@ -13,6 +17,22 @@ QRectF Wallnut::boundingRect() const
 
 void Wallnut::paint(QPainter* painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
+    if (this->getHealth() <= 0)
+    {
+        delete gameObjectGif;
+        gameObjectGif = 0;
+
+        MainWindow::gameScene->removeItem(this);
+        for (int i = 0; i < MainWindow::plantObjects.size(); i++)
+        {
+            if (this == MainWindow::plantObjects.at(i))
+            {
+                MainWindow::plantObjects.removeAt(i);
+                break;
+            }
+        }
+    }
+
     painter->setOpacity(0);
     painter->drawRect(boundingRect());
 }

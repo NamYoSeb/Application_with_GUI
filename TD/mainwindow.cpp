@@ -3,9 +3,14 @@
 
 QPointF MainWindow::mouseCoordinates;
 QPointF MainWindow::mousePressCoordinates;
+
 QGraphicsScene *MainWindow::gameScene;
+
 QList<GameObject *> MainWindow::zombieObjects;
+QList<GameObject *> MainWindow::bulletObjects;
 QList<GameObject *> MainWindow::plantObjects;
+int MainWindow::currentSunAmount;
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent)
     plantHover->setGeometry(-5,-5,0,0);
     gameScene->addWidget(plantHover);
 
+    plantTimer = new QTimer();
+
+    currentSunAmount = 200;
     createGameplayUi();
 }
 
@@ -45,11 +53,13 @@ void MainWindow::setupGameScene()
     setRows();
 
     zombieTimer = new QTimer();
-    moveTimer = new QTimer();
-    connect(moveTimer, SIGNAL(timeout()), this, SLOT(moveEnemies()));
+    refreshTimer = new QTimer();
+
+    connect(refreshTimer, SIGNAL(timeout()), this, SLOT(refresh()));
     connect(zombieTimer, SIGNAL(timeout()), this, SLOT(enemyGenerator()));
-    zombieTimer->start(20);
-    moveTimer->start(25);
+    zombieTimer->start(25);
+    refreshTimer->start(20);
+
 
     ui->graphicsView->setScene(gameScene);
     gameScene->setSceneRect(0, 0, 794, 470);
@@ -92,7 +102,7 @@ void MainWindow::createGameplayUi()
     sunValue->setAttribute(Qt::WA_TranslucentBackground);
     sunValue->setGeometry(10,65,52,15);
     sunValue->setAlignment(Qt::AlignCenter);
-    sunValue->setText("0");
+    sunValue->setText(QString::number(currentSunAmount));
 
     sunImage = new QLabel();
     sunImage->setAttribute(Qt::WA_TranslucentBackground);
@@ -272,6 +282,19 @@ void MainWindow::superShooterPlacement()
     }
 }
 
+void MainWindow::refresh()
+{
+    for(size_t i = 0; i < zombieObjects.size(); ++i)
+        zombieObjects.at(i)->move();
+
+    for(size_t i = 0; i < bulletObjects.size(); ++i)
+        bulletObjects.at(i)->move();
+
+    enablePlantButtons();
+
+    sunValue->setText(QString::number(currentSunAmount));
+}
+
 void MainWindow::hideMenu()
 {
     ui->LevelName->hide();
@@ -294,15 +317,10 @@ void MainWindow::on_StartButton_clicked()
     setupGameScene();
 }
 
-void MainWindow::moveEnemies()
-{
-    for(size_t i = 0; i < zombieObjects.size(); ++i){
-        zombieObjects.at(i)->move();
-    }
-}
-
 void MainWindow::powerGeneratorButtonClicked()
 {
+    currentSunAmount -= PowerGenerator::cost;
+
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(powerGeneratorPlacement()));
     mousePressCoordinates = QPointF(0,0);
@@ -311,6 +329,8 @@ void MainWindow::powerGeneratorButtonClicked()
 
 void MainWindow::shooterButtonClicked()
 {
+    currentSunAmount -= Shooter::cost;
+
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(shooterPlacement()));
     mousePressCoordinates = QPointF(0,0);
@@ -319,6 +339,8 @@ void MainWindow::shooterButtonClicked()
 
 void MainWindow::wallButtonClicked()
 {
+    currentSunAmount -= Wallnut::cost;
+
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(wallPlacement()));
     mousePressCoordinates = QPointF(0,0);
@@ -327,6 +349,8 @@ void MainWindow::wallButtonClicked()
 
 void MainWindow::mineButtonClicked()
 {
+    currentSunAmount -= PotatoMine::cost;
+
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(minePlacement()));
     mousePressCoordinates = QPointF(0,0);
@@ -335,12 +359,57 @@ void MainWindow::mineButtonClicked()
 
 void MainWindow::superShooterButtonClicked()
 {
+    currentSunAmount -= Repeater::cost;
+
     plantTimer = new QTimer();
     connect(plantTimer,SIGNAL(timeout()),this,SLOT(superShooterPlacement()));
     mousePressCoordinates = QPointF(0,0);
     plantTimer->start(20);
 }
 
+void MainWindow::enablePlantButtons()
+{
+    if (Shooter::cost <= currentSunAmount && !plantTimer->isActive())
+    {
+        shooterButton->setEnabled(true);
+    }
+    else
+    {
+        shooterButton->setEnabled(false);
+    }
+    if (PowerGenerator::cost <= currentSunAmount && !plantTimer->isActive())
+    {
+        powerGeneratorButton->setEnabled(true);
+    }
+    else
+    {
+        powerGeneratorButton->setEnabled(false);
+    }
+    if (Wallnut::cost <= currentSunAmount && !plantTimer->isActive())
+    {
+        wallButton->setEnabled(true);
+    }
+    else
+    {
+        wallButton->setEnabled(false);
+    }
+    if (PotatoMine::cost <= currentSunAmount && !plantTimer->isActive())
+    {
+        mineButton->setEnabled(true);
+    }
+    else
+    {
+        mineButton->setEnabled(false);
+    }
+    if (Repeater::cost <= currentSunAmount && !plantTimer->isActive())
+    {
+        superShooterButton->setEnabled(true);
+    }
+    else
+    {
+        superShooterButton->setEnabled(false);
+    }
+}
 
 
 

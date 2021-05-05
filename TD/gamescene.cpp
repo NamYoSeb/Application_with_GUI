@@ -10,6 +10,7 @@ GameScene::GameScene() : QGraphicsScene()
 void GameScene::mousePressEvent(QGraphicsSceneMouseEvent *pressEvent)
 {
     MainWindow::mousePressCoordinates = pressEvent->scenePos();
+
     QGraphicsScene::mousePressEvent(pressEvent);
 }
 

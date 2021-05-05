@@ -37,6 +37,11 @@ void GameObject::setHealth(int value)
     health = value;
 }
 
+QString GameObject::getType() const
+{
+    return type;
+}
+
 void GameObject::move()
 {
     this->xCoordinate -= this->velocity;
