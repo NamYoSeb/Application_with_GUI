@@ -9,6 +9,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bullet.cpp \
     enemy.cpp \
     gameobject.cpp \
     gamescene.cpp \
@@ -18,9 +19,11 @@ SOURCES += \
     powergenerator.cpp \
     repeater.cpp \
     shooter.cpp \
+    sun.cpp \
     wallnut.cpp
 
 HEADERS += \
+    bullet.h \
     enemy.h \
     gameobject.h \
     gamescene.h \
@@ -29,6 +32,7 @@ HEADERS += \
     powergenerator.h \
     repeater.h \
     shooter.h \
+    sun.h \
     wallnut.h
 
 FORMS += \

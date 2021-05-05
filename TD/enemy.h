@@ -3,7 +3,7 @@
 #include "gameobject.h"
 
 class Enemy : public GameObject
-{
+{    
 public:
     //Constructor
     Enemy();

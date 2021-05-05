@@ -12,6 +12,7 @@ class Wallnut : public QObject, public GameObject
     Q_OBJECT;
 
 public:
+    static int cost;
     Wallnut();
 
     QRectF boundingRect() const;

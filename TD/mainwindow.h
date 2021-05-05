@@ -4,9 +4,9 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QTimer>
-#include "gamescene.h"
 #include <QLabel>
 #include <QGraphicsPixmapItem>
+#include "gamescene.h"
 #include "powergenerator.h"
 #include "shooter.h"
 #include "wallnut.h"
@@ -28,6 +28,8 @@ public:
     ~MainWindow();
     static QList<GameObject *> zombieObjects;
     static QList<GameObject *> plantObjects;
+    static QList<GameObject *> bulletObjects;
+    static int currentSunAmount;
 
     void setupGameScene();
     void hideMenu();
@@ -37,13 +39,13 @@ public:
     void setRows();
     void addPortalRow();
     void plantGenerator(GameObject* object);
+    void enablePlantButtons();
 
 
 private slots:
     void enemyGenerator();
     void on_StartButton_clicked();
 
-    void moveEnemies();
     void powerGeneratorButtonClicked();
     void shooterButtonClicked();
     void wallButtonClicked();
@@ -55,6 +57,7 @@ private slots:
     void wallPlacement();
     void minePlacement();
     void superShooterPlacement();
+    void refresh();
 
 public:
     static QPointF mouseCoordinates;
@@ -69,7 +72,7 @@ private:
     QLabel* plantHover;
 
     QTimer* plantTimer;
-    QTimer* moveTimer;
+    QTimer* refreshTimer;
     QTimer* zombieTimer;
     QList<int> zombieStartRows;
 
