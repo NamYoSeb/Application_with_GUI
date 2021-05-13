@@ -50,4 +50,4 @@ https://drive.google.com/file/d/1BYQdpFKnC3RzAz6ZJm3I_gFfUBxMugJg/view?usp=shari
 4. Сани Заяд - задание параметров юнитов
 
 ### Демонстрация работы
-
+https://drive.google.com/file/d/1pJ2sLYyhc6bLVQs24DQw9WqcXJ7kgtu9/view?usp=sharing
