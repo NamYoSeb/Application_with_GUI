@@ -11,7 +11,7 @@ public:
     QLabel *gameObjectGif;
     QTimer *multiUseTimer;
 
-    void setCoordinates(int x, int y);
+    void setCoordinates(double x, double y);
     void move();
     void setVelocity(double velocity);
     int x();
@@ -30,10 +30,10 @@ public:
 protected:
     int width;
     int height;
-    double velocity;
 
-    int xCoordinate;
-    int yCoordinate;
+    double velocity;
+    double xCoordinate;
+    double yCoordinate;
 
     int attack;
     int health;

@@ -122,6 +122,16 @@
       <string>1</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>2</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>3</string>
+     </property>
+    </item>
    </widget>
    <widget class="QPushButton" name="StartButton">
     <property name="geometry">
@@ -143,7 +153,7 @@
      <x>0</x>
      <y>0</y>
      <width>794</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
   </widget>

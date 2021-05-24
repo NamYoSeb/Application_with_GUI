@@ -9,8 +9,12 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    bucketheadenemy.cpp \
     bullet.cpp \
+    coneheadenemy.cpp \
+    defaultenemy.cpp \
     enemy.cpp \
+    flagenemy.cpp \
     gameobject.cpp \
     gamescene.cpp \
     main.cpp \
@@ -23,8 +27,12 @@ SOURCES += \
     wallnut.cpp
 
 HEADERS += \
+    bucketheadenemy.h \
     bullet.h \
+    coneheadenemy.h \
+    defaultenemy.h \
     enemy.h \
+    flagenemy.h \
     gameobject.h \
     gamescene.h \
     mainwindow.h \
@@ -44,7 +52,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    recources.qrc
+    resources.qrc
 
 DISTFILES += \
     images/bucket-head-zombie.gif \
@@ -91,4 +99,5 @@ DISTFILES += \
     images/sunflower.png \
     images/wallnut-button.jpg \
     images/wallnut.gif \
-    images/wallnut.png
+    images/wallnut.png \
+    lvl1.txt
