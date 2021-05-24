@@ -5,7 +5,7 @@ GameObject::GameObject()
 
 }
 
-void GameObject::setCoordinates(int x, int y)
+void GameObject::setCoordinates(double x, double y)
 {
     xCoordinate = x;
     yCoordinate = y;

@@ -15,6 +15,8 @@ int MainWindow::currentSunAmount;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+    , zombieList("")
+    , zombieCounter(0)
 {
     ui->setupUi(this);
 
@@ -31,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     plantTimer = new QTimer();
 
-    currentSunAmount = 200;
+    currentSunAmount = 100;
     createGameplayUi();
 }
 
@@ -54,10 +56,13 @@ void MainWindow::setupGameScene()
 
     zombieTimer = new QTimer();
     refreshTimer = new QTimer();
+    lastZombieWaveTimer = new QTimer();
 
+
+    connect(lastZombieWaveTimer, SIGNAL(timeout()), this, SLOT(lastZombieWaveGenerator()));
     connect(refreshTimer, SIGNAL(timeout()), this, SLOT(refresh()));
     connect(zombieTimer, SIGNAL(timeout()), this, SLOT(enemyGenerator()));
-    zombieTimer->start(25);
+    zombieTimer->start(5000);
     refreshTimer->start(20);
 
 
@@ -148,6 +153,20 @@ void MainWindow::addPortalRow()
     gameScene->addItem(row);
 }
 
+void MainWindow::levelGenerator()
+{
+    QFile file(QString("E:/kg/Application_with_GUI-main/TD/Levels/lvl%1.txt").arg(curLvl));
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+
+    while (!file.atEnd()) {
+        QByteArray line = file.readLine();
+        zombieList += line[0];
+    }
+}
+
 void MainWindow::plantGenerator(GameObject* plant)
 {
     plantTimer->stop();
@@ -185,22 +204,12 @@ void MainWindow::plantGenerator(GameObject* plant)
             }
         }
 
-        if (1)
-        {
-            int x = mouse_press_x - ((mouse_press_x - 72) % 72);
-            int y = mouse_press_y - ((mouse_press_y - 82) % 72);
-            plant->setCoordinates(x, y);
-            gameScene->addItem(plant);
-            plantObjects.append(plant);
-            plant->setupGameObject();
-        }
-        else
-        {
-            plantTimer->start();
-            delete plant;
-            plant = 0;
-            return;
-        }
+        int x = mouse_press_x - ((mouse_press_x - 72) % 72);
+        int y = mouse_press_y - ((mouse_press_y - 82) % 72);
+        plant->setCoordinates(x, y);
+        gameScene->addItem(plant);
+        plantObjects.append(plant);
+        plant->setupGameObject();
     }
 
     plantHover->setGeometry(-70,-70,0,0);
@@ -208,18 +217,35 @@ void MainWindow::plantGenerator(GameObject* plant)
 
 void MainWindow::enemyGenerator()
 {
-    GameObject *enemy = new Enemy();
+    if (zombieCounter >= zombieList.length())
+        return;
+
+    char enemyNumber = zombieList[zombieCounter];
     int rowNumber = rand() % 5;
+
+    GameObject* enemy;
+    if (enemyNumber == '0')
+    {
+        rowNumber = 2;
+        enemy = new FlagEnemy();
+        lastZombieWaveTimer->setSingleShot(true);
+        lastZombieWaveTimer->start(2000);
+    }
+    else if (enemyNumber == '1')
+        enemy = new DefaultEnemy();
+    else if (enemyNumber == '2')
+        enemy = new ConeHeadEnemy();
+    else if (enemyNumber == '3')
+        enemy = new BucketHeadEnemy();
+    else
+        return;
+    ++zombieCounter;
 
     enemy->setCoordinates(720, zombieStartRows[rowNumber]);
 
-    enemy->setVelocity(1);
     gameScene->addItem(enemy);
     zombieObjects.append(enemy);
     enemy->setupGameObject();
-
-    zombieTimer->stop();
-    zombieTimer->start(2000);
 }
 
 void MainWindow::powerGeneratorPlacement()
@@ -284,11 +310,70 @@ void MainWindow::superShooterPlacement()
 
 void MainWindow::refresh()
 {
-    for(size_t i = 0; i < zombieObjects.size(); ++i)
-        zombieObjects.at(i)->move();
+    for (int i = 0; i < zombieObjects.size(); ++i)
+    {
+        if (zombieObjects.at(i)->x() < 60)
+        {
+            QMessageBox death;
+            death.setText("Zombies have eaten your brain");
+            death.setStandardButtons(QMessageBox::Ok);
+            if (death.exec() == QMessageBox::Ok)
+            {
+                int counter = 0;
+                while (counter < plantObjects.size())
+                {
+                    plantObjects.at(counter)->setHealth(0);
+                    counter++;
+                }
+                counter = 0;
+                while (counter < bulletObjects.size())
+                {
+                    bulletObjects.at(counter)->setHealth(0);
+                    counter++;
+                }
 
-    for(size_t i = 0; i < bulletObjects.size(); ++i)
+                delete zombieTimer;
+                zombieTimer = 0;
+                delete refreshTimer;
+                refreshTimer = 0;
+                delete plantHover;
+                plantHover = 0;
+            }
+        }
+        zombieObjects.at(i)->move();
+    }
+    if (zombieCounter == zombieList.size() && zombieObjects.empty())
+    {
+        QMessageBox win_box;
+        win_box.setWindowTitle("Congradulations");
+        win_box.setText("Congradulations! You have won the game");
+        win_box.setStandardButtons(QMessageBox::Ok);
+        win_box.exec();
+
+        int counter = 0;
+        while (counter < plantObjects.size())
+        {
+            plantObjects.at(counter)->setHealth(0);
+            counter++;
+        }
+        counter = 0;
+        while (counter < bulletObjects.size())
+        {
+            bulletObjects.at(counter)->setHealth(0);
+            counter++;
+        }
+
+        delete zombieTimer;
+        zombieTimer = 0;
+        delete refreshTimer;
+        refreshTimer = 0;
+        delete plantHover;
+        plantHover = 0;
+    }
+
+    for(int i = 0; i < bulletObjects.size(); ++i)
         bulletObjects.at(i)->move();
+
 
     enablePlantButtons();
 
@@ -307,13 +392,25 @@ void MainWindow::hideMenu()
 
 }
 
+void MainWindow::loadMenu()
+{
+    ui->LevelName->show();
+    ui->UserName->show();
+    ui->listWidget->show();
+    ui->menuLabel->show();
+    ui->nameLabel->show();
+    ui->StartButton->show();
+    ui->userLabel->show();
+}
+
 
 void MainWindow::on_StartButton_clicked()
 {
     QString curUser = ui->UserName->currentText();
-    QString curLvl = ui->LevelName->currentText();
+    curLvl = ui->LevelName->currentText();
 
     hideMenu();
+    levelGenerator();
     setupGameScene();
 }
 
@@ -409,6 +506,11 @@ void MainWindow::enablePlantButtons()
     {
         superShooterButton->setEnabled(false);
     }
+}
+
+void MainWindow::lastZombieWaveGenerator()
+{
+    zombieTimer->start(100);
 }
 
 

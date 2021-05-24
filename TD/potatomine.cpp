@@ -58,7 +58,8 @@ void PotatoMine::paint(QPainter* painter, const QStyleOptionGraphicsItem *, QWid
     }
     for (int i = 0; i < MainWindow::zombieObjects.size(); i++)
     {
-        if (this->collidesWithItem(MainWindow::zombieObjects.at(i)))
+        if (this->collidesWithItem(MainWindow::zombieObjects.at(i)) &&
+            this->getType() == "activeMine")
         {
             QMovie *activated_mine = new QMovie(explosianImage);
             gameObjectGif->setMovie(activated_mine);

@@ -4,7 +4,11 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QTimer>
+#include <QTextCodec>
+#include <QFile>
 #include <QLabel>
+#include <QDir>
+#include <QMessageBox>
 #include <QGraphicsPixmapItem>
 #include "gamescene.h"
 #include "powergenerator.h"
@@ -13,7 +17,10 @@
 #include "potatomine.h"
 #include "repeater.h"
 #include "gameobject.h"
-#include "enemy.h"
+#include "defaultenemy.h"
+#include "bucketheadenemy.h"
+#include "coneheadenemy.h"
+#include "flagenemy.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -32,7 +39,9 @@ public:
     static int currentSunAmount;
 
     void setupGameScene();
+    void levelGenerator();
     void hideMenu();
+    void loadMenu();
     void createGameplayUi();
     void addRow(int x, int y);
     void addHomeRow();
@@ -43,6 +52,7 @@ public:
 
 
 private slots:
+    void lastZombieWaveGenerator();
     void enemyGenerator();
     void on_StartButton_clicked();
 
@@ -74,12 +84,18 @@ private:
     QTimer* plantTimer;
     QTimer* refreshTimer;
     QTimer* zombieTimer;
+    QTimer* lastZombieWaveTimer;
     QList<int> zombieStartRows;
+
+    std::string zombieList;
+    int zombieCounter;
+    QString curLvl;
 
     QPushButton* powerGeneratorButton;
     QPushButton* shooterButton;
     QPushButton* wallButton;
     QPushButton* mineButton;
     QPushButton* superShooterButton;
+
 };
 #endif // MAINWINDOW_H

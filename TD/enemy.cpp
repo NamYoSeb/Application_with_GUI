@@ -6,16 +6,6 @@
 
 Enemy::Enemy()
 {
-    width = 40;
-    height = 62;
-
-    attack = 10;
-    health = 100;
-
-    imageUrl = ":/images/normal-zombie.gif";
-    imageUrlWidth = 40;
-    imageUrlHeight = 62;
-
     multiUseTimer = new QTimer();
     multiUseTimer->setSingleShot(true);
     multiUseTimer->stop();
@@ -64,7 +54,7 @@ void Enemy::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
             MainWindow::plantObjects.at(i)->setHealth(MainWindow::plantObjects.at(i)->getHealth() - attack);
             if (MainWindow::plantObjects.at(i)->getHealth() <= 0)
             {
-                this->setVelocity(1);
+                this->setVelocity(velocity);
                 break;
             }
             multiUseTimer->start(1000);
@@ -72,7 +62,7 @@ void Enemy::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
         }
     }
     if (!multiUseTimer->isActive())
-        this->setVelocity(1);
+        this->setVelocity(velocity);
 
     if (this->getHealth() <= 0)
     {
