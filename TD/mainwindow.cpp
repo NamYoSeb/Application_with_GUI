@@ -155,7 +155,7 @@ void MainWindow::addPortalRow()
 
 void MainWindow::levelGenerator()
 {
-    QFile file(QString("E:/kg/Application_with_GUI-main/TD/Levels/lvl%1.txt").arg(curLvl));
+    QFile file(QString("../TD/Levels/lvl%1.txt").arg(curLvl));
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
